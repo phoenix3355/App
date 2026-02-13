@@ -85,6 +85,12 @@ class Security:
             user.last_login = datetime.utcnow()
             db.commit()
             
+            # Refresh to ensure all attributes are loaded
+            db.refresh(user)
+            
+            # Expunge from session so it can be used after session closes
+            db.expunge(user)
+            
             return user
         except AuthenticationError:
             raise
