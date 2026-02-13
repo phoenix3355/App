@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .report-info {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #ecf0f1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #9b59b6;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .status-in_stock {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-checked_out {
+            color: #f39c12;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ title }}</h1>
+        <p>Instrument Management System</p>
+    </div>
+    
+    <div class="report-info">
+        <strong>Report Generated:</strong> {{ report_date }}<br>
+        <strong>Total Items:</strong> {{ inventory_items|length }}
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Instrument</th>
+                <th>Serial Number</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th>Checkout Date</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in inventory_items %}
+            <tr>
+                <td>{{ item.instrument.name }}</td>
+                <td>{{ item.instrument.serial_number }}</td>
+                <td>{{ item.location or 'N/A' }}</td>
+                <td class="status-{{ item.status.value }}">{{ item.status.value }}</td>
+                <td>{{ item.assigned_to or 'N/A' }}</td>
+                <td>{{ item.checkout_date.strftime('%Y-%m-%d') if item.checkout_date else 'N/A' }}</td>
+                <td>{{ item.quantity }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center;">No inventory items found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
